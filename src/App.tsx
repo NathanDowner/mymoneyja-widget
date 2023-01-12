@@ -4,6 +4,7 @@ import './index.css';
 import {
   DOMMessage,
   DOMMessageResponse,
+  DOMMessageResponseType,
   DOMMessageType,
   GetTableDataResponseData,
 } from 'types';
@@ -35,31 +36,45 @@ function App() {
     });
   };
 
-  const requestData = async () => {
+  function requestData() {
+    const message: DOMMessage = { type: DOMMessageType.GET_TABLE_DATA };
+    sendMessage(message);
+  }
+
+  const sendMessage = async (message: DOMMessage) => {
     const queryOptions = { active: true, currentWindow: true };
     chrome.tabs.query(queryOptions, (tabs) => {
       console.log(tabs);
-
-      const message: DOMMessage = { type: DOMMessageType.GET_TABLE_DATA };
 
       chrome.tabs.sendMessage(
         tabs[0].id ?? 0,
         message,
         (response: DOMMessageResponse | undefined) => {
           console.log(response);
-          if (response === undefined) {
+          if (!response) {
             return setErrorMessage('Error: No response from content script');
           }
 
-          if (!response.errorMessage) {
-            parseData(response.data as GetTableDataResponseData);
-          } else {
-            setErrorMessage(response.errorMessage);
+          if (response.errorMessage) {
+            return  setErrorMessage(response.errorMessage);
           }
+
+          handleResponse(response);
         }
       );
     });
   };
+
+  function handleResponse(response: DOMMessageResponse) {
+    switch (response.type) {
+      case DOMMessageResponseType.GET_TABLE_DATA_RESPONSE:
+        parseData(response.data as GetTableDataResponseData);
+        break;
+    
+      default:
+        break;
+    }   
+  }
 
   const saveData = async () => {
     await storage.set('hello', { hello: 'world' });

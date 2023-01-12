@@ -5,6 +5,8 @@ import {
   DOMMessageType,
   TableRow,
 } from 'types';
+import { Transaction } from 'types/transaction';
+import { select } from 'utils/dom-manipulation';
 
 const messagesFromReactAppListener = (
   msg: DOMMessage,
@@ -20,10 +22,8 @@ const messagesFromReactAppListener = (
 };
 
 function handleGetTableData(): DOMMessageResponse {
-  const container = document.querySelector(
-    '.order-details .col-xs-12.col-md-6'
-  );
-  const secondContainer = document.querySelector(
+  const container = select('.order-details .col-xs-12.col-md-6');
+  const secondContainer = select(
     '.order-details .col-xs-12.col-md-6:last-child'
   );
 
@@ -53,6 +53,43 @@ function handleGetTableData(): DOMMessageResponse {
   console.log(response);
 
   return response;
+}
+
+function handlePopulateForm(transaction: Transaction): DOMMessageResponse {
+  //grab all the inputs
+  const transactionTypeInput = select(
+    'tr td:nth-child(1) input'
+  ) as HTMLInputElement;
+  const transactionVolumeInput = select(
+    'tr td:nth-child(2) input'
+  ) as HTMLInputElement;
+  const shareCostInput = select('tr td:nth-child(3) input') as HTMLInputElement;
+  const shareValueInput = select(
+    'tr td:nth-child(4) input'
+  ) as HTMLInputElement;
+  const transactionFeesInput = select(
+    'tr td:nth-child(5) input'
+  ) as HTMLInputElement;
+  const transactionDateInput = select('tr td:nth-child(6) button');
+  const submitBtn = select('tr td:nth-child(8) button') as HTMLButtonElement;
+
+  // populate the inputs
+  transactionTypeInput.value = transaction.transactionType;
+  transactionVolumeInput.value = transaction.transactionVolume;
+  shareCostInput.value = transaction.shareCost;
+  shareValueInput.value = transaction.shareValue;
+  transactionFeesInput.value = transaction.transactionFees;
+  transactionDateInput!.textContent = transaction.transactionDate;
+
+  // submit
+
+  submitBtn!.click();
+
+  return {
+    errorMessage: '',
+    data: null,
+    type: DOMMessageResponseType.SUBMIT_FORM_RESPONSE,
+  };
 }
 
 function getContainerRows(container: Element): TableRow[] {
