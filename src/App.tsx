@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import logo from 'assets/mmja_logo.png';
+import { useState } from 'react';
+import logo from './assets/mmja_logo.png';
 import './index.css';
 import {
   DOMMessage,

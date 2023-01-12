@@ -4,7 +4,7 @@ import {
   DOMMessageResponseType,
   DOMMessageType,
   TableRow,
-} from '../types';
+} from 'types';
 
 const messagesFromReactAppListener = (
   msg: DOMMessage,
