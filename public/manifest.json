@@ -1,0 +1,32 @@
+{
+  "short_name": "My Money JA",
+  "name": "My Money JA Portfolio Updater",
+  "description": "A tool for updating your portfolio on My Money JA based on transactions made in your JTrader Pro account.",
+  "version": "1.0.0",
+  "author": "Nathan Downer",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "index.html",
+    "default_title:": "Open the popup"
+  },
+  "icons": {
+    "16": "logo192.png",
+    "48": "logo192.png",
+    "128": "logo192.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.jamstockex.com/*",
+        "https://mymoneyja.com/portfolio/*"
+      ],
+      "js": [
+        "./static/js/content.js"
+      ]
+    }
+  ],
+  "permissions": [
+    "activeTab",
+    "storage"
+  ]
+}
